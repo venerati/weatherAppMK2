@@ -7,7 +7,10 @@
 <ion-content padding>
   <h2>Weather Marshall</h2>
   
-  <button ion-button (click)='clickGetForecast()'> get weather</button>
+  <button ion-button (click)='clickGetForecast(this.lat,this.long)'> get weather</button>
   <button ion-button (change)='convertLatLong($event)'></button>
-  <button ion-button (click)='clickgetGeocodeAPI()'>get geocode</button>
+  <button ion-button (click)='clickgetGeocodeAPI(this.userProvidedLocation)'>get geocode</button>
+  <br>
+  <input id=locationInput type="text">
+  <button ion-button (click)="setLocation()">set location</button>
 </ion-content>
