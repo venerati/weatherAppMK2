@@ -1,16 +1,33 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+      <ion-grid>
+          <ion-row>
+            <ion-col col-1>
+              <ion-icon name="menu"></ion-icon>
+            </ion-col>
+            <ion-col col-9>
+              <!-- <h3>Weather Marshall</h3> -->
+            </ion-col>
+            <ion-col col-2>
+              <ion-icon name="search"></ion-icon>
+              <ion-icon ios="ios-locate" md="md-locate"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+    
+    
+    
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Weather Marshall</h2>
   
   <button ion-button (click)='clickGetForecast(this.lat,this.long)'> get weather</button>
-  <button ion-button (change)='convertLatLong($event)'></button>
   <button ion-button (click)='clickgetGeocodeAPI(this.userProvidedLocation)'>get geocode</button>
   <br>
   <input id=locationInput type="text">
   <button ion-button (click)="setLocation()">set location</button>
+
+  <p *ngIf="this.weatherCurrent">{{this.weatherCurrent.apparentTemperature}}</p>
+  <p>{{this.currentCityName}}</p>
 </ion-content>
