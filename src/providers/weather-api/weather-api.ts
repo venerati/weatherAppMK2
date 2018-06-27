@@ -35,10 +35,6 @@ export class WeatherApiProvider {
     return this.http.post(url,data,this.options);
   }
 
-  convertLatLong(){
-
-  }
-
   getGeocodeApi(location): Observable<any> {
     let data = {
       location: location

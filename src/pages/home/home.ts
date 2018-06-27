@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { WeatherApiProvider } from '../../providers/weather-api/weather-api';
+import { Storage } from '@ionic/storage';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   selector: 'page-home',
@@ -8,7 +10,7 @@ import { WeatherApiProvider } from '../../providers/weather-api/weather-api';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController, public weatherService: WeatherApiProvider) {
+  constructor(public navCtrl: NavController, public weatherService: WeatherApiProvider, private storage: Storage, private geolocation: Geolocation) {
 
   }
 
@@ -21,12 +23,11 @@ export class HomePage {
 
   ngOnInit(){
     console.log('nginitfired')
-    this.lat = 33.0918;
-    this.long = -90.0467;
     //check if there is a stored location, if there is then make a call and get the weather info.
 
     //if there is not a stored location then call your gps location then use that lat long to get weather info.
-
+    this.storeCurrentLocationGPS()
+    this.getLatLongFromStorage()
     this.clickGetForecast(this.lat,this.long);
     this.getCityNameFromLL(this.lat,this.long);
   }
@@ -70,6 +71,30 @@ export class HomePage {
     },err => {
       console.log(err);
     });
+  }
+
+  //this method uses the phones's gps to grab the current location then sets those values into storage for later use.
+  storeCurrentLocationGPS(){
+    console.log('storecurrentlocation has fired')
+    this.geolocation.getCurrentPosition().then((res) => {
+      console.log('the gps resp is ' + res);
+      this.storage.set('lat', res.coords.latitude);
+      this.storage.set('long', res.coords.longitude)
+     }).catch((error) => {
+       console.log('Error getting location', error);
+     });
+  }
+
+  getLatLongFromStorage(){
+    console.log('getlatlongfromstorage has fired')
+    this.storage.get('lat').then((res) => {
+      this.lat = res;
+    });
+
+    this.storage.get('long').then((res) => {
+      this.long = res;
+    })
+    console.log(this.lat + this.long)
   }
 
   //grab the user input from a text field and set it to a var
