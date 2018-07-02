@@ -26,8 +26,7 @@ export class HomePage {
     //check if there is a stored location, if there is then make a call and get the weather info.
 
     //if there is not a stored location then call your gps location then use that lat long to get weather info.
-    this.storeCurrentLocationGPS()
-    this.getLatLongFromStorage()
+    this.initialGPSCheck()
     this.clickGetForecast(this.lat,this.long);
     this.getCityNameFromLL(this.lat,this.long);
   }
@@ -43,6 +42,15 @@ export class HomePage {
       console.log(err);
     });
   };
+
+  initialGPSCheck(){
+    document.addEventListener("deviceready", onDeviceReady, false);
+    function onDeviceReady() {
+        console.log("navigator.geolocation works well");
+        this.storeCurrentLocationGPS()
+        this.getLatLongFromStorage()
+    }
+  }
 
   //I don think this api is going to work for looking up the city from lat long, no real standard to the response.
   getCityNameFromLL(lat,long){
@@ -77,7 +85,8 @@ export class HomePage {
   storeCurrentLocationGPS(){
     console.log('storecurrentlocation has fired')
     this.geolocation.getCurrentPosition().then((res) => {
-      console.log('the gps resp is ' + res);
+      console.log('the gps resp is ' + res.coords.latitude);
+      console.log('the gps resp is ' + res.coords.longitude);
       this.storage.set('lat', res.coords.latitude);
       this.storage.set('long', res.coords.longitude)
      }).catch((error) => {

@@ -53,7 +53,8 @@
             "cordova-plugin-ionic-keyboard": {},
             "cordova-plugin-ionic-webview": {},
             "cordova-plugin-splashscreen": {},
-            "cordova-plugin-whitelist": {}
+            "cordova-plugin-whitelist": {},
+            "Geolocation": {}
         },
         "platforms": [
             "android"
