@@ -2,13 +2,14 @@
   <ion-navbar>
       <ion-grid>
           <ion-row>
-            <ion-col col-1>
-              <ion-icon name="menu"></ion-icon>
+            <ion-col col-3>
             </ion-col>
-            <ion-col col-9>
+            <ion-col col-7>
+                <input id=locationInput type="text">
+                <ion-icon name="search" (click)="searchFromUserInput()"></ion-icon>
             </ion-col>
             <ion-col col-2>
-              <ion-icon name="search"></ion-icon>
+              
               <ion-icon ios="ios-locate" md="md-locate" (click)="storeCurrentLocationGPS()"></ion-icon>
             </ion-col>
           </ion-row>
@@ -24,9 +25,22 @@
   <button ion-button (click)='clickGetForecast(this.lat,this.long)'> get weather</button>
   <button ion-button (click)='clickgetGeocodeAPI(this.userProvidedLocation)'>get geocode</button>
   <br>
-  <input id=locationInput type="text">
-  <button ion-button (click)="setLocation()">set location</button>
+  
+  <button ion-button (click)="getLatLongFromStorage()">Position from storage</button>
 
-  <p *ngIf="this.weatherCurrent">{{this.weatherCurrent.apparentTemperature}}</p>
-  <p>{{this.currentCityName}}</p>
+  <ion-card *ngIf="weatherCurrent != null">
+
+    <ion-card-header>
+      Current Conditions {{currentCityName}}
+    </ion-card-header>
+  
+    <ion-card-content>
+      Currently {{weatherCurrent.summary}} <br>
+      Temp {{weatherCurrent.apparentTemperature}} <br>
+      Humidity {{weatherCurrent.humidity}} <br>
+      Wind {{weatherCurrent.windSpeed}} <br>
+      Dew Point {{weatherCurrent.dewPoint}} <br>
+    </ion-card-content>
+  
+  </ion-card>
 </ion-content>
