@@ -12,7 +12,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { WeatherApiProvider } from '../providers/weather-api/weather-api';
-
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { HttpClientModule } from '@angular/common/http';
 import { Geolocation } from '@ionic-native/geolocation'; 
 
@@ -43,7 +43,8 @@ import { Geolocation } from '@ionic-native/geolocation';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     WeatherApiProvider,
-    Geolocation
+    Geolocation,
+    AndroidPermissions
   ]
 })
 export class AppModule {}

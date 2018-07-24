@@ -27,6 +27,8 @@
   <br>
   
   <button ion-button (click)="getLatLongFromStorage()">Position from storage</button>
+  <button ion-button (click)="weatherSearchFromCurrentGPS()">getweatherfromgps</button>
+  <button ion-button (click)="setGPSCords()">fire gps</button>
 
   <ion-card *ngIf="weatherCurrent != null">
 

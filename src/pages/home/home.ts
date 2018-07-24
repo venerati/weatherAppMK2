@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { WeatherApiProvider } from '../../providers/weather-api/weather-api';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Observable } from 'rxjs/Observable';
+
 
 @Component({
   selector: 'page-home',
@@ -11,8 +12,13 @@ import { Observable } from 'rxjs/Observable';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController, public weatherService: WeatherApiProvider, private storage: Storage, private geolocation: Geolocation) {
+  constructor(public navCtrl: NavController, public weatherService: WeatherApiProvider, private storage: Storage, private geolocation: Geolocation, private plat: Platform) {
 
+    this.plat.ready().then((readySource) => {
+      console.log('Platform ready from', readySource);
+      this.weatherSearchFromCurrentGPS()
+      //this.setGPSCords()
+    });
   }
 
   private userProvidedLocation: string;
@@ -22,16 +28,15 @@ export class HomePage {
   private currentCityName: string;
   private currentCountyName: string;
 
+
   ngOnInit(){
     console.log('nginitfired')
-    //check if there is a stored location, if there is then make a call and get the weather info.
-
-    //if there is not a stored location then call your gps location then use that lat long to get weather info.
-    
+    //this.checkForPermissions();
+    //this.weatherSearchFromCurrentGPS()
   }
 
   ngAfterViewInit(){
-    this.weatherSearchFromCurrentGPS()
+    
   }
 
   //fires the request for forcast info that will be displayed to the user.
@@ -46,14 +51,7 @@ export class HomePage {
     });
   };
 
-  // initialGPSCheck() {
-  //   console.log("navigator.geolocation works well");
-  //   this.storeCurrentLocationGPS()
-  //   this.getLatLongFromStorage()
-    
-  // }
-
-  //I dont think this api is going to work for looking up the city from lat long, no real standard to the response.
+  //this takes the lat long passed to it and returns the name of the closest city or region.
   getCityNameFromLL(lat,long){
     let location = lat+","+long;
     this.weatherService.getGeocodeApi(location).subscribe(res => {
@@ -82,46 +80,34 @@ export class HomePage {
     });
   }
 
-  //this method uses the phones's gps to grab the current location then sets those values into storage for later use.
-  // storeCurrentLocationGPS(){
-  //   console.log('storecurrentlocation has fired')
-  //   this.geolocation.getCurrentPosition().then((res) => {
-  //     console.log('the gps resp is ' + res.coords.latitude);
-  //     console.log('the gps resp is ' + res.coords.longitude);
-  //     this.storage.set('lat', res.coords.latitude);
-  //     this.storage.set('long', res.coords.longitude)
-  //    }).catch((error) => {
-  //      console.log('Error getting location', error);
-  //    });
-  // }
-
-  weatherSearchFromCurrentGPS(){
-    this.geolocation.getCurrentPosition().then((res) => {
-      console.log('the gps resp is ' + res.coords.latitude);
-      console.log('the gps resp is ' + res.coords.longitude);
-      this.lat = res.coords.latitude
-      this.long = res.coords.longitude
-      this.clickGetForecast(this.lat,this.long);
-      this.getCityNameFromLL(this.lat,this.long);
-     }).catch((error) => {
-       console.log('Error getting location', error);
-     });
+  //this calls the built in gps of the phone and will return location information or an error
+  getGPSCords(): Observable<any> {
+    console.log('setGPSCords has fired')
+      return new Observable(observer => {
+        this.geolocation.getCurrentPosition({enableHighAccuracy: false, timeout: 30000}).then(res => {
+          observer.next(res);
+        }).catch((err) => {
+          console.log('Error getting location', err);
+          observer.next(err);
+        });
+      })
   }
 
-  //this is used to set the lat long variables with the data set in app storage.
-  // getLatLongFromStorage(){
-  //   console.log('getlatlongfromstorage has fired')
-  //   this.storage.get('lat').then((res) => {
-  //     this.lat = res;
-  //     console.log(this.lat)
-  //   });
-
-  //   this.storage.get('long').then((res) => {
-  //     this.long = res;
-  //     console.log(this.long)
-  //   })
-    
-  // }
+  //this will request a fresh set of lat long from the gps radio
+  weatherSearchFromCurrentGPS(){
+    console.log('wathersearchfromcurrentgps has fired')
+    this.getGPSCords().subscribe( res => {
+      console.log('the gps resp is ' + res.coords.latitude);
+      console.log('the gps resp is ' + res.coords.longitude);
+      this.clickGetForecast(res.coords.latitude,res.coords.longitude);
+      this.getCityNameFromLL(res.coords.latitude,res.coords.longitude);
+      this.lat = res.coords.latitude;
+      this.long = res.coords.longitude;
+    }, err => {
+      alert('there was an error getting your current location');
+      console.log(err);
+    })
+  }
 
   //grab the user input from a text field and set it to a var
   setLocation(): Observable<any> {
@@ -131,8 +117,6 @@ export class HomePage {
       //this.userProvidedLocation = location
       observer.next(location)
     })
-    
-    
   }
 
   searchFromUserInput(){
@@ -158,3 +142,67 @@ export class HomePage {
   };
 
 }
+
+  //this method uses the phones's gps to grab the current location then sets those values into storage for later use.
+  // storeCurrentLocationGPS(){
+  //   console.log('storecurrentlocation has fired')
+  //   this.geolocation.getCurrentPosition().then((res) => {
+  //     console.log('the gps resp is ' + res.coords.latitude);
+  //     console.log('the gps resp is ' + res.coords.longitude);
+  //     this.storage.set('lat', res.coords.latitude);
+  //     this.storage.set('long', res.coords.longitude)
+  //    }).catch((error) => {
+  //      console.log('Error getting location', error);
+  //    });
+  // }
+
+    //this is used to set the lat long variables with the data set in app storage.
+  // getLatLongFromStorage(){
+  //   console.log('getlatlongfromstorage has fired')
+  //   this.storage.get('lat').then((res) => {
+  //     this.lat = res;
+  //     console.log(this.lat)
+  //   });
+
+  //   this.storage.get('long').then((res) => {
+  //     this.long = res;
+  //     console.log(this.long)
+  //   })
+    
+  // }
+
+    // initialGPSCheck() {
+  //   console.log("navigator.geolocation works well");
+  //   this.storeCurrentLocationGPS()
+  //   this.getLatLongFromStorage()
+    
+  // }
+
+  //askforPermission(){
+    //   //this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.ACCESS_COARS_LOCATION);
+    //   //this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA).then(res => {console.log(res)}, err => {console.log(err)})
+    //   this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.ACCESS_COARS_LOCATION).then(res => {
+    //     if(res.hasPermission) {
+    //       alert('you now have permission')
+    //       this.setGPSCords()
+    //     } else {
+    //       alert('you still suck')
+    //     }
+    //   })
+  
+    // }
+  
+    // checkForPermissions() {
+    //     this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.ACCESS_COARS_LOCATION).then(
+    //       res => {
+    //         console.log('check for permissions fired and returned a res')
+    //         console.log(res)
+    //         this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.ACCESS_COARS_LOCATION);
+  
+    //       },
+    //       err => {
+    //         console.log('there was an err')
+    //         this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.ACCESS_COARS_LOCATION)
+    //       }
+    //     );
+    // }
