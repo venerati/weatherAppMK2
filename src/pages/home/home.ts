@@ -84,11 +84,11 @@ export class HomePage {
   getGPSCords(): Observable<any> {
     console.log('setGPSCords has fired')
       return new Observable(observer => {
-        this.geolocation.getCurrentPosition({enableHighAccuracy: false, timeout: 30000}).then(res => {
+        this.geolocation.getCurrentPosition({enableHighAccuracy: true, timeout: 1000}).then(res => {
           observer.next(res);
         }).catch((err) => {
           console.log('Error getting location', err);
-          observer.next(err);
+          observer.error(err);
         });
       })
   }
@@ -104,9 +104,17 @@ export class HomePage {
       this.lat = res.coords.latitude;
       this.long = res.coords.longitude;
     }, err => {
-      alert('there was an error getting your current location');
-      console.log(err);
-    })
+      console.log("gps failed to get location. Getting location from IP");
+      this.weatherService.getLocationFromIP().subscribe(res => {
+        this.clickGetForecast(res.lat,res.lon);
+        this.getCityNameFromLL(res.lat,res.lon);
+        this.lat = res.lat;
+        this.long = res.lon;
+      }, err => {
+        console.log(err);
+        alert('there was an error getting your location. Make sure your gps is enabled or that you have a connection to the internet');
+      });
+    });
   }
 
   //grab the user input from a text field and set it to a var
@@ -119,14 +127,15 @@ export class HomePage {
     })
   }
 
+  //this is used to get the forcast from user input from the searchbar
   searchFromUserInput(){
     this.setLocation().subscribe(res => {
       this.clickgetGeocodeAPI(res).subscribe(res => {
         this.clickGetForecast(this.lat,this.long);
         this.getCityNameFromLL(this.lat,this.long);
       });
-    })
-  }
+    });
+  };
 
   //this takes the location provided by the user and then returns the lat long info that is then bound to the local vars for use in the getforecast().
   clickgetGeocodeAPI(location): Observable<any>{
@@ -138,9 +147,8 @@ export class HomePage {
         this.long = parsedRes.results[0].geometry.location.lng;
         observer.next(res)
       });
-    })
+    });
   };
-
 }
 
   //this method uses the phones's gps to grab the current location then sets those values into storage for later use.

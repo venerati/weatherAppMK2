@@ -1,34 +1,27 @@
 <ion-header>
   <ion-navbar>
+    <ion-title text-center>Weather Marshall</ion-title>
       <ion-grid>
-          <ion-row>
-            <ion-col col-3>
-            </ion-col>
-            <ion-col col-7>
-                <input id=locationInput type="text">
-                <ion-icon name="search" (click)="searchFromUserInput()"></ion-icon>
-            </ion-col>
-            <ion-col col-2>
-              
-              <ion-icon ios="ios-locate" md="md-locate" (click)="storeCurrentLocationGPS()"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-    
-    
-    
+        <ion-row>
+          <ion-col col-3>
+          </ion-col>
+          <ion-col col-7>
+              <input id=locationInput type="text">
+              <ion-icon name="search" (click)="searchFromUserInput()"></ion-icon>
+          </ion-col>
+          <ion-col col-2>
+            <ion-icon ios="ios-locate" md="md-locate" (click)="storeCurrentLocationGPS()"></ion-icon>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-navbar>
 </ion-header>
 
+
 <ion-content padding>
-  
-  <button ion-button (click)='clickGetForecast(this.lat,this.long)'> get weather</button>
-  <button ion-button (click)='clickgetGeocodeAPI(this.userProvidedLocation)'>get geocode</button>
-  <br>
-  
-  <button ion-button (click)="getLatLongFromStorage()">Position from storage</button>
   <button ion-button (click)="weatherSearchFromCurrentGPS()">getweatherfromgps</button>
-  <button ion-button (click)="setGPSCords()">fire gps</button>
+  <button ion-button (click)="getLatLongFromIP()">get latlong from ip</button>
+  
 
   <ion-card *ngIf="weatherCurrent != null">
 

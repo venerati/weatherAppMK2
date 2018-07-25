@@ -35,6 +35,7 @@ export class WeatherApiProvider {
     return this.http.post(url,data,this.options);
   }
 
+  //this calls an api that will give you a lat/long from a location string such as a city.
   getGeocodeApi(location): Observable<any> {
     let data = {
       location: location
@@ -48,6 +49,13 @@ export class WeatherApiProvider {
     console.log('get lat long has fired')
     let url = 'https://t2s0225595.execute-api.us-east-2.amazonaws.com/prod/getLatLongFromGoogleAPI'
 
-    return this.http.post(url,data,this.options)
+    return this.http.post(url,data,this.options);
+  }
+
+  //this calls a free api that allows you to get your general location via your IP address. 
+  getLocationFromIP(): Observable<any>{
+    let url = 'http://ip-api.com/json'
+    
+    return this.http.get(url);
   }
 }
