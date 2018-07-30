@@ -15,6 +15,7 @@ import { WeatherApiProvider } from '../providers/weather-api/weather-api';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { HttpClientModule } from '@angular/common/http';
 import { Geolocation } from '@ionic-native/geolocation'; 
+import { Keyboard } from '@ionic-native/keyboard';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { Geolocation } from '@ionic-native/geolocation';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     WeatherApiProvider,
     Geolocation,
-    AndroidPermissions
+    AndroidPermissions,
+    Keyboard
   ]
 })
 export class AppModule {}

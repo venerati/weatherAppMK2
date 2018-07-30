@@ -1,36 +1,43 @@
 <ion-header>
   <ion-navbar>
-    <ion-title text-center>Weather Marshall</ion-title>
-      <ion-grid>
-        <ion-row>
-          <ion-col col-3>
-          </ion-col>
-          <ion-col col-7>
-              <input id=locationInput type="text">
-              <ion-icon name="search" (click)="searchFromUserInput()"></ion-icon>
-          </ion-col>
-          <ion-col col-2>
-            <ion-icon ios="ios-locate" md="md-locate" (click)="storeCurrentLocationGPS()"></ion-icon>
-          </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-title text-center><h1>Weather Marshall</h1></ion-title>
   </ion-navbar>
+  <ion-toolbar color="secondary">
+      <ion-grid>
+          <ion-row>
+              <ion-col col-1>
+                </ion-col>
+              <ion-col col-1>
+                  <ion-icon ios="ios-locate" md="md-locate" (click)="weatherSearchFromCurrentGPS()"></ion-icon>
+                </ion-col>
+              <ion-col col-1>
+              </ion-col> 
+            <ion-col col-8>
+                <input id=locationInput type="text" (keyup.enter)="searchFromUserInput()">
+                <ion-icon name="search" ></ion-icon>
+            </ion-col>
+        </ion-row>
+      </ion-grid>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding>
-  <button ion-button (click)="weatherSearchFromCurrentGPS()">getweatherfromgps</button>
-  <button ion-button (click)="getLatLongFromIP()">get latlong from ip</button>
+  <ion-card *ngIf="weatherCurrent != null">
+    <ion-card-header>
+      <h1>{{currentNeighborhood}}</h1>
+      <h2>{{currentCityName}}, {{currentState}}</h2>
+    </ion-card-header>
   
-
+  </ion-card>
   <ion-card *ngIf="weatherCurrent != null">
 
     <ion-card-header>
-      Current Conditions {{currentCityName}}
+      <h1>Current Conditions</h1>      
     </ion-card-header>
   
     <ion-card-content>
-      Currently {{weatherCurrent.summary}} <br>
+      {{weatherCurrent.summary}} <br>
       Temp {{weatherCurrent.apparentTemperature}} <br>
       Humidity {{weatherCurrent.humidity}} <br>
       Wind {{weatherCurrent.windSpeed}} <br>
@@ -38,4 +45,23 @@
     </ion-card-content>
   
   </ion-card>
+
+  <ion-card *ngIf="weatherCurrent != null">
+    <ion-card-header>
+      <h1>Hourly Chart</h1>
+    </ion-card-header>
+    <ion-card-content>
+
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="weatherCurrent != null">
+    <ion-card-header>
+        <h1>Next Week</h1>
+    </ion-card-header>
+    <ion-card-content>
+      
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
