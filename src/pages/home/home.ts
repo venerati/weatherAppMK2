@@ -4,7 +4,6 @@ import { WeatherApiProvider } from '../../providers/weather-api/weather-api';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Observable } from 'rxjs/Observable';
-import { Keyboard } from '@ionic-native/keyboard';
 
 
 @Component({
@@ -13,7 +12,7 @@ import { Keyboard } from '@ionic-native/keyboard';
 })
 export class HomePage {
 
-  constructor(private keyboard: Keyboard, public navCtrl: NavController, public weatherService: WeatherApiProvider, private storage: Storage, private geolocation: Geolocation, private plat: Platform) {
+  constructor( public navCtrl: NavController, public weatherService: WeatherApiProvider, private storage: Storage, private geolocation: Geolocation, private plat: Platform) {
 
     this.plat.ready().then((readySource) => {
       console.log('Platform ready from', readySource);
@@ -49,7 +48,6 @@ export class HomePage {
   ngAfterViewInit(){
     
   }
-
   //fires the request for forcast info that will be displayed to the user.
   clickGetForecast(lat,long){
     this.weatherService.getForecast(lat,long).subscribe(res =>{
@@ -147,11 +145,7 @@ export class HomePage {
   //grab the user input from a text field and set it to a var
   setLocation(): Observable<any> {
     console.log('setlocation fired')
-    console.log(this.env)
-    if(this.env = 'cordova') {
-      this.keyboard.close();
-      console.log('close keyboard has fired.')
-    }
+    document.getElementById("locationInput").blur();
     return new Observable(observer => {
       let location = (<HTMLInputElement>document.getElementById("locationInput")).value
       console.log(location);
@@ -163,6 +157,8 @@ export class HomePage {
   //this is used to get the forcast from user input from the searchbar
   searchFromUserInput(){
     this.setLocation().subscribe(res => {
+      let inputElement = (<HTMLInputElement>document.getElementById("locationInput"))
+      inputElement.value = "";
       this.clickgetGeocodeAPI(res).subscribe(res => {
         this.clickGetForecast(this.lat,this.long);
         this.getCityNameFromLL(this.lat,this.long);
