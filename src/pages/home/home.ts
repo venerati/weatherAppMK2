@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, Platform } from 'ionic-angular';
+import { NavController, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { WeatherApiProvider } from '../../providers/weather-api/weather-api';
 import { Storage } from '@ionic/storage';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -12,17 +12,20 @@ import { Observable } from 'rxjs/Observable';
 })
 export class HomePage {
 
-  constructor( public navCtrl: NavController, public weatherService: WeatherApiProvider, private storage: Storage, private geolocation: Geolocation, private plat: Platform) {
+  constructor( 
+    public navCtrl: NavController, 
+    public weatherService: WeatherApiProvider, 
+    private storage: Storage, 
+    private geolocation: Geolocation, 
+    private plat: Platform,
+    private modal: ModalController,
+    public loadingCtrl: LoadingController
+  ) {
 
     this.plat.ready().then((readySource) => {
       console.log('Platform ready from', readySource);
-      if(readySource = 'cordova') {
-        this.env = readySource
-        this.weatherSearchFromCurrentGPS();
-      } else {
-        this.getWeatherFromIP();
-      }
-      //this.setGPSCords()
+      this.env = readySource
+      this.getWeatherMain()
     });
   }
 
@@ -37,6 +40,7 @@ export class HomePage {
   private currentNeighborhood: string;
   private currentState: string;
   private currentCountyName: string;
+  private search = false;
 
 
   ngOnInit(){
@@ -45,9 +49,46 @@ export class HomePage {
     //this.weatherSearchFromCurrentGPS()
   }
 
-  ngAfterViewInit(){
-    
+  ionViewDidEnter() {
+    this.getWeatherMain()
   }
+
+  getWeatherMain(){
+    if(this.env = 'cordova') {
+      this.weatherSearchFromCurrentGPS();
+    } else {
+      this.getWeatherFromIP();
+    }
+  }
+
+  //this is used to show the searchbar
+  clickToSearch(){
+    this.search = true;
+    setTimeout(this.focusOnInput, 500)
+  }
+
+  presentLoadingDefault() {
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+  
+    loading.present();
+  }
+
+  dimissLoadingIcon(){
+    let loading = this.loadingCtrl.create({
+      content: 'Please wait...'
+    });
+
+    loading.dismiss();
+  }
+
+
+  //this is called to pop the keyboard up on the searchbar automatically.
+  focusOnInput(){
+    document.getElementById("locationInput").focus()
+  }
+
   //fires the request for forcast info that will be displayed to the user.
   clickGetForecast(lat,long){
     this.weatherService.getForecast(lat,long).subscribe(res =>{
@@ -93,8 +134,8 @@ export class HomePage {
         }
         
       }
-      //this.currentCityName = data.results[0].address_components[3].short_name;
-      //console.log(this.currentCityName);
+    //this.currentCityName = data.results[0].address_components[3].short_name;
+    //console.log(this.currentCityName);
     },err => {
       console.log(err);
     });
@@ -116,6 +157,7 @@ export class HomePage {
   //this will request a fresh set of lat long from the gps radio or from your IP address
   weatherSearchFromCurrentGPS(){
     console.log('wathersearchfromcurrentgps has fired')
+
     this.getGPSCords().subscribe( res => {
       console.log('the gps resp is ' + res.coords.latitude);
       console.log('the gps resp is ' + res.coords.longitude);
@@ -123,9 +165,12 @@ export class HomePage {
       this.getCityNameFromLL(res.coords.latitude,res.coords.longitude);
       this.lat = res.coords.latitude;
       this.long = res.coords.longitude;
+      this.storeLatLong(res.coords.latitude,res.coords.longitude)
+
     }, err => {
       console.log("gps failed to get location.");
       this.getWeatherFromIP();
+
     });
   }
 
@@ -136,16 +181,24 @@ export class HomePage {
       this.getCityNameFromLL(res.lat,res.lon);
       this.lat = res.lat;
       this.long = res.lon;
+      this.storeLatLong(res.lat,res.lon);
+      console.log(res)
     }, err => {
       console.log(err);
       alert('there was an error getting your location from IP. Be sure you have a connection to the internet.');
     });
   }
 
+  getWeatherFromStored(){
+    this.clickGetForecast(this.lat,this.long);
+    this.getCityNameFromLL(this.lat,this.long);
+  }
+
   //grab the user input from a text field and set it to a var
   setLocation(): Observable<any> {
     console.log('setlocation fired')
     document.getElementById("locationInput").blur();
+    this.search = false;
     return new Observable(observer => {
       let location = (<HTMLInputElement>document.getElementById("locationInput")).value
       console.log(location);
@@ -178,20 +231,14 @@ export class HomePage {
       });
     });
   };
+
+  //this function sets the values of lat and long in storage for use in other parts of the app.
+  storeLatLong(lat,long){
+    this.storage.set('lat', lat);
+    this.storage.set('long', long);
+  }
 }
 
-  //this method uses the phones's gps to grab the current location then sets those values into storage for later use.
-  // storeCurrentLocationGPS(){
-  //   console.log('storecurrentlocation has fired')
-  //   this.geolocation.getCurrentPosition().then((res) => {
-  //     console.log('the gps resp is ' + res.coords.latitude);
-  //     console.log('the gps resp is ' + res.coords.longitude);
-  //     this.storage.set('lat', res.coords.latitude);
-  //     this.storage.set('long', res.coords.longitude)
-  //    }).catch((error) => {
-  //      console.log('Error getting location', error);
-  //    });
-  // }
 
     //this is used to set the lat long variables with the data set in app storage.
   // getLatLongFromStorage(){

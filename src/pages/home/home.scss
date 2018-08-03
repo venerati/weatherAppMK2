@@ -1,3 +1,43 @@
 page-home {
+    .refeshIcon {
+        float: right;
+    }
 
+    .searchIcon {
+        margin-top: -3px;
+        float: right;
+    }
+
+    .GPSIcon {
+        float: left;
+        margin-top: -3px;
+    }
+
+    h1 {
+        margin-top: 1.6rem;
+    }
+}
+
+.toolbar-title {
+    color: rgb(0,0,0) !important;
+}
+
+.card-header {
+    background-color: color($colors,color5);
+}
+
+.card-content {
+    background-color: color($colors,color4);
+}
+
+.content {
+    background-color: color($colors,color3);
+}
+
+.tabbar {
+    background-color: color($colors,color4) !important;
+}
+
+#locationInput{
+    text-align: center;
 }

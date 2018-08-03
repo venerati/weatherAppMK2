@@ -1,17 +1,35 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="color5">
     <ion-title>
-      Contact
+      <ion-title text-center><h1>Weather Marshall</h1></ion-title>
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
-    <ion-item>
-      <ion-icon name="ionic" item-start></ion-icon>
-      @ionicframework
-    </ion-item>
-  </ion-list>
+  <ion-card>
+    <ion-card-header text-center>
+      <h2>App Settings</h2>
+    </ion-card-header>
+    <ion-card-content>
+        <ion-list>
+
+            <ion-item>
+              <ion-label>Tempature as Fahrenheit</ion-label>
+              <ion-toggle [(ngModel)]="pepperoni"></ion-toggle>
+            </ion-item>
+          
+            <ion-item>
+              <ion-label>Get severe weather alerts</ion-label>
+              <ion-toggle [(ngModel)]="sausage" disabled="false"></ion-toggle>
+            </ion-item>
+          
+            <ion-item>
+              <ion-label>App starts with default location</ion-label>
+              <ion-toggle [(ngModel)]="mushrooms"></ion-toggle>
+            </ion-item>
+          
+          </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

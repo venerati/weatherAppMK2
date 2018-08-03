@@ -22,7 +22,7 @@ import { Geolocation } from '@ionic-native/geolocation';
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
   ],
   imports: [
     BrowserModule,

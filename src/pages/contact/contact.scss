@@ -1,3 +1,14 @@
 page-contact {
+    .card-header {
+        background-color: color($colors,color5);
+    }
 
+    .list {
+        background-color: color($colors,color4);
+        margin: 0px !important;
+    }
+
+    .item {
+        background-color: color($colors,color4);
+    }
 }

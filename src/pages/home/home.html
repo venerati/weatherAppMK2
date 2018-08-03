@@ -1,19 +1,22 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title text-center><h1>Weather Marshall</h1></ion-title>
+  <ion-navbar color="color5">
+    <ion-title text-center>
+      <h1>
+        <button ion-button icon-only round class="GPSIcon" (click)="weatherSearchFromCurrentGPS()">
+          <ion-icon name="locate" ></ion-icon>
+        </button>
+        Weather Marshall
+        <button ion-button icon-only round class="searchIcon" (click)="clickToSearch()">
+          <ion-icon name="search" ></ion-icon>
+        </button>
+      </h1>
+    </ion-title>
   </ion-navbar>
-  <ion-toolbar color="secondary">
-      <ion-grid>
+  <ion-toolbar color="color4" *ngIf="search == true">
+      <ion-grid class='searchBar'>
           <ion-row>
-              <ion-col col-1>
-                </ion-col>
-              <ion-col col-1>
-                  <ion-icon ios="ios-locate" md="md-locate" (click)="weatherSearchFromCurrentGPS()"></ion-icon>
-                </ion-col>
-              <ion-col col-1>
-              </ion-col> 
-            <ion-col col-8>
-                <input id=locationInput type="text" placeholder="Search" (keyup.enter)="searchFromUserInput()">
+            <ion-col col-12 text-center>
+              <input id=locationInput type="text" placeholder="Search Here" (keyup.enter)="searchFromUserInput()">
             </ion-col>
         </ion-row>
       </ion-grid>
@@ -22,9 +25,10 @@
 
 
 <ion-content padding>
-  <ion-card *ngIf="weatherCurrent != null">
-    <ion-card-header>
-      <h1>{{currentNeighborhood}}</h1>
+  <ion-card  *ngIf="weatherCurrent != null">
+    <ion-card-header >
+      <h1>{{currentNeighborhood}}<button ion-button icon-only round class="refeshIcon" (click)="getWeatherFromStored()"><ion-icon  ios="ios-refresh" md="md-refresh" ></ion-icon></button></h1>
+      
       <h2>{{currentCityName}}, {{currentState}}</h2>
     </ion-card-header>
   
